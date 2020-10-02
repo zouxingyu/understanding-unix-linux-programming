@@ -8,6 +8,23 @@
 #include <sys/types.h>
 #include <unistd.h>
 #define MAXSIZE 128
+
+char *GetNewPath(char *newPath, char *source, char *destination) {
+    int sourceLen = strlen(source);
+    int desLen = strlen(destination);
+    int i;
+    for (i = sourceLen; i >= 0; --i) {
+        if (source[i] == '/') {
+            break;
+        }
+    }
+    strcat(newPath, destination);
+    newPath[desLen] = '/';
+    newPath[desLen + 1] = '\0';
+    strcat(newPath, source + i + 1);
+    return newPath;
+}
+
 int main(int argc, char *argv[]) {
     if (argc < 3) {
         fprintf(stderr, "usage: %s source destination", *argv);
@@ -30,6 +47,18 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
     bool exist = true;
+    bool isDestiDir = false;
+    if(stat(destination, &stOutput) == -1){
+        perror("stat destination failed");
+        exit(1);
+    }
+    if (S_ISDIR(stOutput.st_mode)) {
+        isDestiDir = true;
+    }
+    if (isDestiDir) {
+        char newPath[MAXSIZE];
+        destination = GetNewPath(newPath, source, destination);
+    }
     if (stat(destination, &stOutput) == -1) {
         if (errno == ENOENT) {
             exist = false;
@@ -52,7 +81,7 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
     if (!exist) {
-        if ((fdOutput = open(destination, O_CREAT | O_WRONLY)) == -1) {
+         if ((fdOutput = open(destination, O_CREAT | O_WRONLY)) == -1) {
             perror("open destination failed");
             exit(1);
         }
@@ -64,11 +93,12 @@ int main(int argc, char *argv[]) {
             if ((c = getc(ptr)) != EOF) {
                 if (c != 'y') exit(0);
             }
-            if ((fdOutput = open(destination, O_TRUNC | O_WRONLY)) == -1) {
-                perror("open destination failed");
-                exit(1);
-            }
         }
+        if ((fdOutput = open(destination, O_TRUNC | O_WRONLY)) == -1) {
+            perror("open destination failed");
+            exit(1);
+        }
+        
     }
     char buf[MAXSIZE];
     int nByte;
