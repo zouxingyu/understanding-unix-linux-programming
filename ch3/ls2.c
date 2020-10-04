@@ -10,7 +10,6 @@
 #include <sys/types.h>
 #include <time.h>
 #include <unistd.h>
-
 #define MAXSIZE 128
 typedef struct DirQueue{
     int idx; 
