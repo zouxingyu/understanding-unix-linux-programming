@@ -60,8 +60,19 @@ int main(int argc, char *argv[])
     int input;
     int delay = 500, ndelay = 0;
     SetInterval(delay);
+    //nodelay(stdscr, TRUE);
+    //while(1){
+    //    if((input = getch()) != ERR){
+    //        if(input == 'q')break;
+    //        else if(input == ' ')dir *= -1;
+    //        else if(input == 'f')ndelay = delay / 2;
+    //        else if(input == 's')ndelay = delay * 2;
+    //        if(ndelay > 0)SetInterval(delay = ndelay);
+    //    }
+    //}
     while(1){
         input = getch();
+        addstr("11");
         if(input == 'q')break;
         else if(input == ' ')dir *= -1;
         else if(input == 'f')ndelay = delay / 2;

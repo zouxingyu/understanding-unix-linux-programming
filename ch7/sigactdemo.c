@@ -17,6 +17,7 @@ int main(int argc, char *argv[]) {
     sigaddset(&blocked, SIGQUIT);
     newAction.sa_mask = blocked;
     newAction.sa_handler = Handler;
+    newAction.sa_flags = SA_NODEFER;
     if (sigaction(SIGINT, &newAction, NULL) == -1) {
         perror("sigaction");
     } else {
