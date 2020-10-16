@@ -34,6 +34,7 @@ int main(int argc, char *argv[])
             argNums++;
         }else{
             if(feof(stdin))exit(1);
+            if(!argNums)continue;
             argList[argNums] = NULL;
             int wstatus;
             int pid = fork();
@@ -43,13 +44,19 @@ int main(int argc, char *argv[])
                 exit(1);
             }else if(!pid){
                 execvp(argList[0], argList);
-                DeleteArgList(argList, argNums);
                 perror("execvp");
                 exit(1);
             }else{
                 while(wait(&wstatus) != pid)
                     ;
-                printf("child exit with status [ret:%d, sig:%d, core:%d]\n", wstatus>>8, wstatus&0x7F, wstatus&0x80);
+                int ret = wstatus >> 8;
+                int sig = wstatus & 0x7F;
+                int core = wstatus & 0x80;
+                printf("child exit with status [ret:%d, sig:%d, core:%d]\n", ret, sig, core);
+                if(sig){
+                    printf("signal: %s\n", strsignal(sig));
+                } 
+                DeleteArgList(argList, argNums);
             }
             argNums = 0;
         }
