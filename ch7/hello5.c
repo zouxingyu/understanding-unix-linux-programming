@@ -16,9 +16,9 @@ int main(int argc, char *argv[]) {
         addstr(str);
         move(LINES - 1, COLS - 1);
         refresh();
-        sleep(5);
-        move(startRow, startCol);
-        addstr(blank);
+        sleep(2);
+        //move(startRow, startCol);
+        //addstr(blank);
         startCol += dir;
         if (startCol >= right) dir = -1;
         if (startCol <= left) dir = 1;

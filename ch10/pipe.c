@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
     }else {
         close(array[0]);
         if(dup2(array[1], 1) == -1)Oops("dup2");
-        close(array[0]);
+        close(array[1]);
         execlp(argv[1], argv[1], (char *)NULL);
         Oops("execlp");
     }
